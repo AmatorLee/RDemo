@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,12 @@ public class MainActivity extends AppCompatActivity {
         }
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         TestAdapter adapter = new TestAdapter(this, mDatas);
+        adapter.setListener(new BaseRecyclerAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v, int pos) {
+                Toast.makeText(MainActivity.this, pos + "点击了", Toast.LENGTH_SHORT).show();
+            }
+        });
         View view = getLayoutInflater().inflate(R.layout.layout_headview, null);
         adapter.addFootView(view);
         adapter.addHeadView(view);

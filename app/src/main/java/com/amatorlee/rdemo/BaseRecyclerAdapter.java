@@ -15,7 +15,7 @@ import java.util.List;
  * 基类Adaper
  */
 
-public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRecyclerViewHolder>{
+public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRecyclerViewHolder> {
 
 
     private static final int ITEM_HEAD = 1000;
@@ -40,6 +40,7 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
 
     /**
      * 构造方法
+     *
      * @param context
      * @param mDatas
      */
@@ -50,14 +51,16 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
 
     /**
      * headView
+     *
      * @param headView
      */
-    public void addHeadView(View headView){
+    public void addHeadView(View headView) {
         this.mHeadView = headView;
         notifyItemInserted(0);
     }
-    public View getHeadView(){
-        if (mHeadView != null){
+
+    public View getHeadView() {
+        if (mHeadView != null) {
             return mHeadView;
         }
         return null;
@@ -65,14 +68,16 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
 
     /**
      * FootView
+     *
      * @param footView
      */
-    public void addFootView(View footView){
+    public void addFootView(View footView) {
         this.mFootView = footView;
         notifyItemInserted(getItemCount() - 1);
     }
-    public View getFootView(){
-        if (mFootView != null){
+
+    public View getFootView() {
+        if (mFootView != null) {
             return mFootView;
         }
         return null;
@@ -80,16 +85,17 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
 
     @Override
     public BaseRecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (mHeadView != null && viewType == ITEM_HEAD){
+        if (mHeadView != null && viewType == ITEM_HEAD) {
             //如果为headView则itemView为headView
             return new BaseRecyclerViewHolder(mHeadView);
-        }else if (mFootView != null && viewType == ITEM_FOOT){
+        } else if (mFootView != null && viewType == ITEM_FOOT) {
             //如果为footView则itemView为footView
             return new BaseRecyclerViewHolder(mFootView);
         }
         //否则则为自己的View
-        return new BaseRecyclerViewHolder(mInflater.inflate(getLayoutID(),parent,false));
+        return new BaseRecyclerViewHolder(mInflater.inflate(getLayoutID(), parent, false));
     }
+
     /*此方法为解析自己的view提供一个layoutId*/
     public abstract int getLayoutID();
 
@@ -99,23 +105,24 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
         /*判断是否有headView，如果0被占用则position-1*/
         final int pos = getLayoutPos(holder);
 
-        if (getItemViewType(position) == ITEM_HEAD)return;/*交予自己处理headView*/
-        if (getItemViewType(position) == ITEM_FOOT)return;/*处理footView*/
+        if (getItemViewType(position) == ITEM_HEAD) return;/*交予自己处理headView*/
+        if (getItemViewType(position) == ITEM_FOOT) return;/*处理footView*/
         /*点击监听*/
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mListener != null){
-                    mListener.onItemClick(v,pos);
+                if (mListener != null) {
+                    mListener.onItemClick(v, pos);
                 }
             }
         });
         /*自己处理数据的方法*/
-        onBindData(holder,pos);
+        onBindData(holder, pos);
     }
+
     /*判断是否有headView，如果0被占用则position-1*/
-    private int getLayoutPos(BaseRecyclerViewHolder holder){
-        return mHeadView == null?holder.getLayoutPosition():holder.getLayoutPosition() - 1;
+    private int getLayoutPos(BaseRecyclerViewHolder holder) {
+        return mHeadView == null ? holder.getLayoutPosition() : holder.getLayoutPosition() - 1;
     }
 
     /*自己处理数据的方法*/
@@ -123,13 +130,13 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
 
     @Override
     public int getItemCount() {
-        if (mHeadView == null && mFootView != null){
+        if (mHeadView == null && mFootView != null) {
             //如果footView则count+1
             return mDatas.size() + 1;
-        }else if (mHeadView != null && mFootView == null){
+        } else if (mHeadView != null && mFootView == null) {
             //如果有headView则+1
-            return mDatas.size()+ 1;
-        }else if(mFootView != null && mHeadView != null){
+            return mDatas.size() + 1;
+        } else if (mFootView != null && mHeadView != null) {
             //假如都有则+2
             return mDatas.size() + 2;
         }
@@ -139,22 +146,23 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
 
     /***
      * 此方法判断itemType的类型
+     *
      * @param position
      * @return
      */
     @Override
     public int getItemViewType(int position) {
-        if (mHeadView == null && mFootView == null)return ITEM_NOMAL;
-        if (position == 0) return ITEM_HEAD;
-        if (position == getItemCount() -1) return ITEM_FOOT;
+        if (mHeadView == null && mFootView == null) return ITEM_NOMAL;
+        if (position == 0 && mHeadView != null) return ITEM_HEAD;
+        if (position == getItemCount() - 1) return ITEM_FOOT;
         return ITEM_NOMAL;
 
     }
 
     /**
-     *回调监听
+     * 回调监听
      */
-    public interface OnItemClickListener{
+    public interface OnItemClickListener {
         void onItemClick(View v, int pos);
     }
 
@@ -162,11 +170,11 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
         final RecyclerView.LayoutManager manager = recyclerView.getLayoutManager();
-        if (manager instanceof GridLayoutManager){
+        if (manager instanceof GridLayoutManager) {
             ((GridLayoutManager) manager).setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                 @Override
                 public int getSpanSize(int position) {
-                    if (getItemViewType(position) == ITEM_HEAD || getItemViewType(position) == ITEM_FOOT){
+                    if (getItemViewType(position) == ITEM_HEAD || getItemViewType(position) == ITEM_FOOT) {
                         return ((GridLayoutManager) manager).getSpanCount();
                     }
                     return 1;
@@ -178,9 +186,9 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
     @Override
     public void onViewAttachedToWindow(BaseRecyclerViewHolder holder) {
         super.onViewAttachedToWindow(holder);
-        if (holder.getItemViewType() == ITEM_HEAD ||holder.getItemViewType() == ITEM_FOOT){
+        if (holder.getItemViewType() == ITEM_HEAD || holder.getItemViewType() == ITEM_FOOT) {
             ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
-            if (layoutParams != null && layoutParams instanceof StaggeredGridLayoutManager.LayoutParams){
+            if (layoutParams != null && layoutParams instanceof StaggeredGridLayoutManager.LayoutParams) {
                 StaggeredGridLayoutManager.LayoutParams sl = (StaggeredGridLayoutManager.LayoutParams) layoutParams;
                 sl.setFullSpan(true);
             }
